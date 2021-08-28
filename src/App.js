@@ -1,8 +1,8 @@
 import { makeStyles } from '@material-ui/core';
 import React from 'react';
-
+// import Foodter from './Components/Foodter/foodter'
 import NavBar from './Components/Navbar/NavBar';
-import Slide from './Components/Slide/Slide';
+import IndexHome from './Page/Home/IndexHome';
 
 const useStyle = makeStyles((theme) => {
     return {
@@ -17,7 +17,8 @@ function App(props) {
             <NavBar />
             <div className={classes.toolbar}>
             </div>
-            <Slide/>
+            <IndexHome/>
+
             {/* <Foodter/> */}
         </div>
     );

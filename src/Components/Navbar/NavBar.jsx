@@ -22,7 +22,8 @@ const useStyle = makeStyles((theme) => {
         },
         navbar__menu: {
             listStyle: 'none',
-            display: 'flex'
+            display: 'flex',
+            marginLeft: '1rem'
         },
         navbar__item: {
             textTransform: 'capitalize',

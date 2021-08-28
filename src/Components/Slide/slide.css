@@ -9,6 +9,7 @@
 .slide{
     position: relative;
     min-width: 100%;
+    max-width: 100%;
     height: 100%;
     transition: 0.6s;
 }
@@ -64,4 +65,19 @@ h1>p{
 
 .dot__item:not(:last-child){
     margin-right: 10px;
+}
+
+@media only screen and ( max-width: 739px) {
+    .slider{
+        height: 30vh;
+    }
+    .slide .info{
+        width: 80%;
+    }
+    .info>h1{
+        font-size:1.5rem;
+    }
+    .info>p{
+        display: none;
+    }
 }

@@ -1,12 +1,13 @@
-import { AppBar, Badge, makeStyles, Toolbar, useMediaQuery, useTheme, withStyles, Avatar, Drawer, Divider, Button } from '@material-ui/core';
+import { AppBar, Avatar, Badge, Button, Divider, Drawer, makeStyles, Toolbar, useMediaQuery, useTheme, withStyles } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import HomeIcon from '@material-ui/icons/Home';
 import EmojiFoodBeverageIcon from '@material-ui/icons/EmojiFoodBeverage';
-import RestaurantMenuIcon from '@material-ui/icons/RestaurantMenu';
-import React from 'react';
+import HomeIcon from '@material-ui/icons/Home';
 import MenuIcon from '@material-ui/icons/Menu';
-import { useState } from 'react';
+import RestaurantMenuIcon from '@material-ui/icons/RestaurantMenu';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+
 const Logo = process.env.PUBLIC_URL + '/logo.png'
 
 
@@ -28,10 +29,10 @@ const useStyle = makeStyles((theme) => {
         navbar__item: {
             textTransform: 'capitalize',
             marginRight: '5rem',
-            display:"flex",
-            alignItems:'center',
-            "&>svg":{
-                marginRight:10
+            display: "flex",
+            alignItems: 'center',
+            "&>svg": {
+                marginRight: 10
             }
         },
 
@@ -156,15 +157,17 @@ function NavBar(props) {
                             <ul className={classes.navbar__menu__mobile}>
                                 <MenuItem>
                                     <HomeIcon />
-                                    <li className={classes.navbar__item__mobile}>Home</li>
-                                </MenuItem>
-                                <MenuItem>
-                                    <EmojiFoodBeverageIcon />
-                                    <li className={classes.navbar__item__mobile}>oder</li>
+                                    <li className={classes.navbar__item__mobile}>
+                                        <Link to='/'>home</Link>
+                                    </li>
                                 </MenuItem>
                                 <MenuItem>
                                     <RestaurantMenuIcon />
-                                    <li className={classes.navbar__item__mobile}>menu</li>
+                                    <li className={classes.navbar__item__mobile}><Link to='/menu'>Menu</Link></li>
+                                </MenuItem>
+                                <MenuItem>
+                                    <EmojiFoodBeverageIcon />
+                                    <li className={classes.navbar__item__mobile}><Link to='/oder'>Oder</Link></li>
                                 </MenuItem>
                             </ul>
                         </DrawerStyle>
@@ -177,15 +180,15 @@ function NavBar(props) {
                             <ul className={classes.navbar__menu}>
                                 <li className={classes.navbar__item}>
                                     <HomeIcon />
-                                    Home
-                                </li>
-                                <li className={classes.navbar__item}>
-                                    <EmojiFoodBeverageIcon />
-                                    oder
+                                    <Link to='/home'>home</Link>
                                 </li>
                                 <li className={classes.navbar__item}>
                                     <RestaurantMenuIcon />
-                                    menu
+                                    <Link to='/menu'>Menu</Link>
+                                </li>
+                                <li className={classes.navbar__item}>
+                                    <EmojiFoodBeverageIcon />
+                                    <Link to='/oder'>Oder</Link>
                                 </li>
                             </ul>
                         </Toolbar>

@@ -1,6 +1,7 @@
-import { Button, Container, Divider, Grid, Hidden, makeStyles, Paper, withStyles } from '@material-ui/core';
-import React from 'react';
+import { Button, Container, Divider, FormControl, FormHelperText, Grid, Hidden, makeStyles, MenuItem, Select, TextField, withStyles } from '@material-ui/core';
 import FastfoodIcon from '@material-ui/icons/Fastfood';
+import CardFood from 'Page/Home/components/CardFood/CardFood';
+import React from 'react';
 
 const useStyle = makeStyles({
     container: {
@@ -44,21 +45,47 @@ function ShopConten(props) {
                         <div className={classes.listItem}>
                             <CategoryButton>
                                 <FastfoodIcon />
-                                Haaps
+                                Hấp
                             </CategoryButton>
                             <CategoryButton>
                                 <FastfoodIcon />
-                                laau
+                                Lẩu
                             </CategoryButton>
                             <CategoryButton>
                                 <FastfoodIcon />
-                                nuong
+                                Nướng
                             </CategoryButton>
                         </div>
                     </Grid>
                 </Hidden>
                 <Grid item xs={12} lg={10} >
-                    <Paper>2</Paper>
+                    <Container>
+                        <Grid container>
+                            <Grid item lg={9} sm={6} xs={6}>
+                                <TextField label="Tìm kiếm" style={{ width: '100%' }}></TextField>
+                            </Grid>
+                            <Grid item lg={3} sm={6} xs={6}>
+                                <FormControl className={classes.formControl}>
+                                    <Select
+                                        value={'none'}
+                                        // onChange={handleChange}
+                                        displayEmpty
+                                        className={classes.selectEmpty}
+                                        inputProps={{ 'aria-label': 'Without label' }}
+                                    >
+                                        <MenuItem value="" disabled>
+                                            Placeholder
+                                        </MenuItem>
+                                        <MenuItem value={10}>Ten</MenuItem>
+                                        <MenuItem value={20}>Twenty</MenuItem>
+                                        <MenuItem value={30}>Thirty</MenuItem>
+                                    </Select>
+                                    <FormHelperText>Placeholder</FormHelperText>
+                                </FormControl>
+                            </Grid>
+                        </Grid>
+                    </Container>
+                    <CardFood/>
                 </Grid>
             </Grid>
         </Container>

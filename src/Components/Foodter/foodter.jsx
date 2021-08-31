@@ -23,7 +23,7 @@ function Foodter(props) {
                 <Grid item lg={4} sm={6} xs={12} className={classes.column}>
                     <Paper>2</Paper>
                 </Grid>
-                <Grid item lg={4} sm={12} xs={12} className={classes.column}s>
+                <Grid item lg={4} sm={12} xs={12} className={classes.column}>
                     <Paper>3</Paper>
                 </Grid>
             </Grid>

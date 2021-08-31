@@ -65,7 +65,7 @@ function StepOder(props) {
         <Container maxWidth='xl' className={classes.container}>
             <div className={classes.title}>how to using <p style={{ color: '#e67e22', fontSize: "1.5rem" }}>smart order</p></div>
             <Grid container className={classes.grid}>
-                <Grid xs={12} lg={4} md={4} sm={6} className={classes.colume}>
+                <Grid item xs={12} lg={4} md={4} sm={6} className={classes.colume}>
                     <div className={classes.step}>
                         <div className={classes.stepIcon}>
                             <img src={process.env.PUBLIC_URL + '/img/scanqr.png'} alt="icon" className={classes.icon_img} />
@@ -76,7 +76,7 @@ function StepOder(props) {
                         </div>
                     </div>
                 </Grid>
-                <Grid xs={12} lg={4} md={4} sm={6} className={classes.colume}>
+                <Grid item xs={12} lg={4} md={4} sm={6} className={classes.colume}>
                     <div className={classes.step}>
                         <div className={classes.stepIcon}>
                             <img src={process.env.PUBLIC_URL + '/img/menu.png'} alt="icon" className={classes.icon_img} />
@@ -87,7 +87,7 @@ function StepOder(props) {
                         </div>
                     </div>
                 </Grid>
-                <Grid xs={12} lg={4} md={4} sm={12} className={classes.colume}>
+                <Grid item xs={12} lg={4} md={4} sm={12} className={classes.colume}>
                     <div className={classes.step}>
                         <div className={classes.stepIcon}>
                             <img src={process.env.PUBLIC_URL + '/img/complete.png'} alt="icon" className={classes.icon_img} />

@@ -6,7 +6,8 @@ import MenuIcon from '@material-ui/icons/Menu';
 import RestaurantMenuIcon from '@material-ui/icons/RestaurantMenu';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { Link, useHistory } from 'react-router-dom';
 
 const Logo = process.env.PUBLIC_URL + '/logo.png'
 
@@ -105,7 +106,7 @@ const DrawerStyle = withStyles((theme) => ({
 
 const MenuItem = withStyles((theme) => ({
     root: {
-        marginLeft: 5
+
     },
     label: {
         justifyContent: 'end'
@@ -117,7 +118,9 @@ function NavBar(props) {
     const theme = useTheme();
     const match = useMediaQuery(theme.breakpoints.down('xs'))
     const [open, isOpen] = useState(false)
-    console.log(match)
+    const history = useHistory();
+    const { pageActive } = useSelector(state => state.NavbarReducer)
+
     return (
         <>
             {
@@ -155,19 +158,40 @@ function NavBar(props) {
                             </StyledBtMobile>
                             <Divider />
                             <ul className={classes.navbar__menu__mobile}>
-                                <MenuItem>
+                                <MenuItem onClick={() => {
+                                    history.push('/home')
+                                    isOpen(false)
+                                }
+                                }
+                                    style={pageActive === 'home' ? { backgroundColor: "#74b9ff" } : { backgroundColor: 'unset' }}
+
+                                >
                                     <HomeIcon />
                                     <li className={classes.navbar__item__mobile}>
-                                        <Link to='/'>home</Link>
+                                        home
                                     </li>
                                 </MenuItem>
-                                <MenuItem>
+                                <MenuItem onClick={() => {
+                                    history.push('/menu')
+                                    isOpen(false)
+                                }}
+                                    style={pageActive === 'menu' ? { backgroundColor: "#74b9ff" } : { backgroundColor: 'unset' }}
+                                >
                                     <RestaurantMenuIcon />
-                                    <li className={classes.navbar__item__mobile}><Link to='/menu'>Menu</Link></li>
+                                    <li className={classes.navbar__item__mobile} >
+                                        Menu
+                                    </li>
                                 </MenuItem>
-                                <MenuItem>
+                                <MenuItem onClick={() => {
+                                    history.push("/oder")
+                                    isOpen(false)
+                                }}
+                                    style={pageActive === 'oder' ? { backgroundColor: "#74b9ff" } : { backgroundColor: 'unset' }}
+                                >
                                     <EmojiFoodBeverageIcon />
-                                    <li className={classes.navbar__item__mobile}><Link to='/oder'>Oder</Link></li>
+                                    <li className={classes.navbar__item__mobile}>
+                                        Oder
+                                    </li>
                                 </MenuItem>
                             </ul>
                         </DrawerStyle>

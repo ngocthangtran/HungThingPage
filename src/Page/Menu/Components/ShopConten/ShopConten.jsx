@@ -1,7 +1,8 @@
-import { Button, Container, Divider, FormControl, FormHelperText, Grid, Hidden, makeStyles, MenuItem, Select, TextField, withStyles } from '@material-ui/core';
+import { Button, Container, Divider, FormControl, Grid, Hidden, makeStyles, MenuItem, Select, TextField, withStyles } from '@material-ui/core';
 import FastfoodIcon from '@material-ui/icons/Fastfood';
 import CardFood from 'Page/Home/components/CardFood/CardFood';
 import React from 'react';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 
 const useStyle = makeStyles({
     container: {
@@ -28,11 +29,17 @@ const CategoryButton = withStyles((theme) => ({
     },
     label: {
         justifyContent: 'end'
-    }
+    },
 }))(Button);
 
 function ShopConten(props) {
     const classes = useStyle();
+
+    const history = useHistory()
+    const match = useRouteMatch()
+    const clickItem = () => {
+        history.push(`${match.url}/dasdsada`)
+    }
     return (
         <Container maxWidth="md" className={classes.container}>
             <Grid container>
@@ -59,33 +66,60 @@ function ShopConten(props) {
                     </Grid>
                 </Hidden>
                 <Grid item xs={12} lg={10} >
-                    <Container>
+                    <Container style={{ marginBottom: '2rem' }}>
                         <Grid container>
-                            <Grid item lg={9} sm={6} xs={6}>
+                            <Grid item lg={9} sm={6} xs={6} style={{ paddingRight: '1rem' }}>
                                 <TextField label="Tìm kiếm" style={{ width: '100%' }}></TextField>
                             </Grid>
-                            <Grid item lg={3} sm={6} xs={6}>
-                                <FormControl className={classes.formControl}>
+                            <Grid item lg={3} sm={6} xs={6} style={{ display: 'flex' }}>
+                                <FormControl fullWidth style={{ marginTop: 'auto' }}>
                                     <Select
-                                        value={'none'}
+                                        value={10}
                                         // onChange={handleChange}
                                         displayEmpty
                                         className={classes.selectEmpty}
                                         inputProps={{ 'aria-label': 'Without label' }}
                                     >
                                         <MenuItem value="" disabled>
-                                            Placeholder
+                                            Xắp xếp
                                         </MenuItem>
-                                        <MenuItem value={10}>Ten</MenuItem>
-                                        <MenuItem value={20}>Twenty</MenuItem>
-                                        <MenuItem value={30}>Thirty</MenuItem>
+                                        <MenuItem value={10}>Giá:Từ thấp đến cao</MenuItem>
+                                        <MenuItem value={20}>Giá: Từ cao đế thấp</MenuItem>
                                     </Select>
-                                    <FormHelperText>Placeholder</FormHelperText>
                                 </FormControl>
                             </Grid>
                         </Grid>
                     </Container>
-                    <CardFood/>
+                    <Grid container style={{ marginBottom: "3rem", rowGap: "30px" }}>
+                        <Grid item lg={3} xs={6}>
+                            <CardFood onClick={clickItem} />
+                        </Grid>
+                        <Grid item lg={3} xs={6}>
+                            <CardFood onClick={clickItem} foodDetail={'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nihil libero praesentium repellendus voluptatum ullam ratione commodi nam officia! Quas suscipit odit qui velit enim reiciendis fugit tempore ab quae? Enim.'} />
+                        </Grid><Grid item lg={3} xs={6}>
+                            <CardFood onClick={clickItem} />
+                        </Grid><Grid item lg={3} xs={6}>
+                            <CardFood onClick={clickItem} />
+                        </Grid><Grid item lg={3} xs={6}>
+                            <CardFood />
+                        </Grid><Grid item lg={3} xs={6}>
+                            <CardFood onClick={clickItem} />
+                        </Grid><Grid item lg={3} xs={6}>
+                            <CardFood onClick={clickItem} />
+                        </Grid><Grid item lg={3} xs={6}>
+                            <CardFood />
+                        </Grid><Grid item lg={3} xs={6}>
+                            <CardFood />
+                        </Grid><Grid item lg={3} xs={6}>
+                            <CardFood />
+                        </Grid><Grid item lg={3} xs={6}>
+                            <CardFood />
+                        </Grid><Grid item lg={3} xs={6}>
+                            <CardFood />
+                        </Grid><Grid item lg={3} xs={6}>
+                            <CardFood />
+                        </Grid>
+                    </Grid>
                 </Grid>
             </Grid>
         </Container>

@@ -101,9 +101,6 @@ const StyleButton = withStyles(theme => ({
             backgroundColor: '#a83532'
         }
     },
-    lable: {
-        // backgroundColor:'green'
-    }
 }))(Button)
 
 function IndexViewFood(props) {

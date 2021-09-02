@@ -9,7 +9,10 @@ import Foodter from 'Components/Foodter/foodter';
 
 const useStyle = makeStyles((theme) => {
     return {
-        toolbar: theme.mixins.toolbar
+        toolbar: theme.mixins.toolbar,
+        conten: {
+            minHeight: `calc(100vh - ${theme.mixins.toolbar.minHeight}px)`,
+        }
     }
 })
 
@@ -20,12 +23,13 @@ function App(props) {
             <Router>
                 <NavBar />
                 <div className={classes.toolbar}></div>
-                <Switch>
-                    <Redirect exact from='/' to='/home' />
-                    <Redirect exact from='/menu' to='/menu/newfood' />
-                    <Route path='/home' component={IndexHome} />
-                    <Route path='/menu' component={IndexMenu} />
-                </Switch>
+                <div className={classes.conten}>
+                    <Switch>
+                        <Redirect exact from='/' to='/home' />
+                        <Route path='/home' component={IndexHome} />
+                        <Route path='/menu' component={IndexMenu} />
+                    </Switch>
+                </div>
             </Router>
             <Foodter />
         </>

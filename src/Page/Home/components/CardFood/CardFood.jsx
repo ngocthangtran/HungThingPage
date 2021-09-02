@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 
 import './cardfood.scss'
+import { shortenMoney } from 'utils/convertPrice';
 
 CardFood.propTypes = {
     linkImg: PropTypes.string,
@@ -17,7 +18,7 @@ CardFood.defaultProps = {
     name: 'Xa lát rau củ',
     foodDetail: 'Món khai vị thanh mát, lại tươi ngon giòn ngọt tự nhiên',
     price: 150000,
-    onClick:null
+    onClick: null
 }
 
 function CardFood(props) {
@@ -39,7 +40,7 @@ function CardFood(props) {
                 </div>
                 <div className="item__conten__bottom">
                     <div className="item__conten__bottom__price">
-                        {price}
+                        {shortenMoney(price)}
                     </div>
                     <div className="item__conten__bottom__buttom">
                         <AddShoppingCartIcon />

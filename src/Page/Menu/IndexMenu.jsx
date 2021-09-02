@@ -23,18 +23,19 @@ function IndexMenu(props) {
         } catch (error) {
             console.log('Error in Shop conten')
         }
+        
     }, [dispatch])
     const { category, loadingCategory } = useSelector(state => state.MenuReducer);
-    const { foods } = category
+    const { food } = category
     
     return (
         <>
             <Banner />
             <Switch>
                 {
-                    !loadingCategory && foods &&
+                    !loadingCategory && food &&
                     <Redirect exact from={`${Match.url}`}
-                        to={foods ? `${Match.url}/${foods[0]}` : `${Match.url}/tttttt`}
+                        to={food ? `${Match.url}/${food[0]}` : `${Match.url}/tttttt`}
                     />
                 }
                 <Route exact path={`${Match.url}/:category`} component={ShopConten} />

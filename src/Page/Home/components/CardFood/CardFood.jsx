@@ -40,6 +40,7 @@ function CardFood(props) {
                 </div>
                 <div className="item__conten__bottom">
                     <div className="item__conten__bottom__price">
+                        <span style={{ color: '#999' }}>Từ: </span>
                         {shortenMoney(price)}
                     </div>
                     <div className="item__conten__bottom__buttom">

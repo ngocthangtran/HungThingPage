@@ -1,13 +1,19 @@
-import { Button, Divider, useMediaQuery } from '@material-ui/core';
+import { Button, Chip, CircularProgress, Divider, useMediaQuery } from '@material-ui/core';
 import { Container, Grid, makeStyles, useTheme, withStyles } from '@material-ui/core';
+import MenuApi from 'Api/MenuApi';
 import CardFood from 'Page/Home/components/CardFood/CardFood';
 import React from 'react';
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { shortenMoney } from 'utils/convertPrice';
 const useStyle = makeStyles({
     container: {
         marginTop: "3rem"
     },
     img__food: {
-        backgroundImage: "url('https://images.unsplash.com/photo-1432139555190-58524dae6a55?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1355&q=80')",
+        // backgroundImage: "url('https://images.unsplash.com/photo-1432139555190-58524dae6a55?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1355&q=80')",
         width: "100%",
         paddingTop: '100%',
         backgroundPosition: 'center',
@@ -31,7 +37,8 @@ const useStyle = makeStyles({
         textOverflow: 'ellipsis',
         '&>p': {
             display: 'inline',
-            color: "#999"
+            color: "#999",
+            paddingRight: 10
         },
         '&>span': {
             display: 'inline',
@@ -42,6 +49,24 @@ const useStyle = makeStyles({
             fontWeight: '500',
             display: 'inline',
             fontSize: '1rem',
+        }
+    },
+    price: {
+        paddingTop: 10,
+        fontSize: "1.5rem",
+        display: 'flex',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        '&>p': {
+            display: 'inline',
+            color: "#999",
+            paddingRight: 10
+        },
+    },
+    active: {
+        background: '#0984e3',
+        '&>span': {
+            color: '#ffffff'
         }
     },
     detail: {
@@ -91,7 +116,6 @@ const useStyle = makeStyles({
 
 const StyleButton = withStyles(theme => ({
     root: {
-        // backgroundColor:'black'
         padding: '0.5rem',
         borderRadius: '999px',
         backgroundColor: '#ff514e',
@@ -103,81 +127,144 @@ const StyleButton = withStyles(theme => ({
     },
 }))(Button)
 
-function IndexViewFood(props) {
+const StyleChip = withStyles({
+    root: {
+        margin: 5,
+    },
+    label: {
+        fontSize: '1.5rem',
+        color: '#ff541a'
+    }
+})(Chip)
+
+function IndexViewFood() {
+
+    //display
     const classes = useStyle();
     const theme = useTheme();
     const mobile = useMediaQuery(theme.breakpoints.down('xs'));
     const ipad = useMediaQuery(theme.breakpoints.down('sm'))
 
-    return (
-        <Container maxWidth='lg' className={classes.container}>
-            <Grid container>
-                <Grid item sm={6} xs={12}>
-                    <Container disableGutters={true}>
-                        <div className={classes.img__food}>
-                        </div>
-                    </Container>
-                </Grid>
-                <Grid item sm={6} xs={12} style={{ display: 'flex', flexDirection: 'column' }}>
-                    <Container maxWidth={false} disableGutters={mobile}>
-                        <div className={classes.info}>
-                            <div >Thịt nướng campuchia</div>
-                            <div className={classes.p}><p>Giá:</p> <span>đ150.000</span></div>
-                            <div className={classes.p}><p>Danh mục:</p> Nướng</div>
-                            <div className={classes.p}>
-                                <p>Miêu tả:</p>
-                                <h2>
-                                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                                    Obcaecati labore exercitationem itaque? Quidem incidunt dolorum similique,
-                                    aliquid, animi veniam fugiat eum molestias perferendis quia necessitatibus.
-                                    Neque nam sunt eius voluptatibus.
-                                </h2>
-                            </div>
-                        </div>
-                        <Divider />
-                        <Grid container style={{ marginTop: '1rem' }}>
-                            <Grid item md={6} xs={12} style={{ display: 'flex' }}>
-                                <div className={classes.count}>
-                                    <span>Số lượng:</span>
-                                    <div className={classes.btn}>-</div>
-                                    <div contentEditable="true"
-                                        suppressContentEditableWarning={true}
-                                        className={`${classes.btn} ${classes.input}`}
-                                    >
-                                        0
-                                    </div>
-                                    <div className={classes.btn}>+</div>
-                                </div>
-                            </Grid>
-                            <Grid item md={6} xs={12}>
-                                <StyleButton
-                                    style={
-                                        ipad ? { margin: '1rem 0' } : {}
-                                    }
-                                >Thêm vào giỏ hàng</StyleButton>
-                            </Grid>
-                        </Grid>
-                    </Container>
-                    <div className={classes.suggest}>
-                        <Container >
-                            <h3> Các món ăn cùng danh mục:</h3>
-                            <Grid container style={{ marginTop: '1rem' }}>
-                                <Grid item lg={4} sm={6}>
-                                    <CardFood />
-                                </Grid>
-                                <Grid item lg={4} sm={6}>
-                                    <CardFood />
-                                </Grid>
-                                <Grid item lg={4} sm={6}>
-                                    <CardFood />
-                                </Grid>
-                            </Grid>
-                        </Container>
+    //handling data
+    const { category: categoryReducer } = useSelector(state => state.MenuReducer)
+    const [viewFood, setViewFood] = useState();
+    const [classify, setClassify] = useState('');
+    //--get key food end category
+    const { category, keyFood } = useParams()
+    useEffect(() => {
+        if (categoryReducer) {
+            Object.keys(categoryReducer).forEach(item => {
+                const a = categoryReducer[item].find(el => el === category)
+                if (a !== undefined) {
+                    setClassify(item)
+                }
+            })
+            const getFood = async (params) => {
+                const data = await MenuApi.getFood(params);
+                console.log(data)
+                setViewFood(data)
+            }
+            if (classify) {
+                const params = {
+                    classify,
+                    category,
+                    keyFood
+                }
+                getFood(params)
+            }
+        }
+    }, [category, categoryReducer, classify, keyFood])
 
-                    </div>
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+        if (viewFood) {
+            setLoading(false)
+            return
+        } setLoading(true)
+    }, [viewFood])
+    return (
+        <>
+            {
+                loading &&
+                <Grid item lg={12} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '2rem' }}>
+                    <CircularProgress />
+                    Đang tải dữ liệu
                 </Grid>
-            </Grid>
-        </Container>
+            }
+            {
+                !loading &&
+                <Container maxWidth='lg' className={classes.container}>
+                    <Grid container>
+                        <Grid item sm={6} xs={12}>
+                            <Container disableGutters={true}>
+                                <div className={classes.img__food}style={{backgroundImage:`url(${viewFood.link_img})`}}>
+                                </div>
+                            </Container>
+                        </Grid>
+                        <Grid item sm={6} xs={12} style={{ display: 'flex', flexDirection: 'column' }}>
+                            <Container maxWidth={false} disableGutters={mobile}>
+                                <div className={classes.info}>
+                                    <div >{viewFood.name}</div>
+                                    <div className={classes.price}>
+                                        <p>Giá:</p>
+                                        {
+                                            viewFood.price.size.map((item, index) => <StyleChip label={shortenMoney(item)} key={index} />)
+                                        }
+                                    </div>
+                                    <div className={classes.p}><p>Danh mục:</p> {viewFood.category}</div>
+                                    <div className={classes.p}>
+                                        <p>Miêu tả:</p>
+                                        <h2>
+                                            {viewFood.describe}
+                                        </h2>
+                                    </div>
+                                </div>
+                                <Divider />
+                                <Grid container style={{ marginTop: '1rem' }}>
+                                    <Grid item md={6} xs={12} style={{ display: 'flex' }}>
+                                        <div className={classes.count}>
+                                            <span>Số lượng:</span>
+                                            <div className={classes.btn}>-</div>
+                                            <div contentEditable="true"
+                                                suppressContentEditableWarning={true}
+                                                className={`${classes.btn} ${classes.input}`}
+                                            >
+                                                0
+                                            </div>
+                                            <div className={classes.btn}>+</div>
+                                        </div>
+                                    </Grid>
+                                    <Grid item md={6} xs={12}>
+                                        <StyleButton
+                                            style={
+                                                ipad ? { margin: '1rem 0' } : {}
+                                            }
+                                        >Thêm vào giỏ hàng</StyleButton>
+                                    </Grid>
+                                </Grid>
+                            </Container>
+                            <div className={classes.suggest}>
+                                <Container >
+                                    <h3> Các món ăn cùng danh mục:</h3>
+                                    <Grid container style={{ marginTop: '1rem' }}>
+                                        <Grid item lg={4} sm={6}>
+                                            <CardFood />
+                                        </Grid>
+                                        <Grid item lg={4} sm={6}>
+                                            <CardFood />
+                                        </Grid>
+                                        <Grid item lg={4} sm={6}>
+                                            <CardFood />
+                                        </Grid>
+                                    </Grid>
+                                </Container>
+
+                            </div>
+                        </Grid>
+                    </Grid>
+                </Container>
+            }
+        </>
     );
 }
 

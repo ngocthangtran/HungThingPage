@@ -70,15 +70,15 @@ function ShopConten(props) {
     const mobile = useMediaQuery(theme.breakpoints.down('sm'))
 
     const { category: categorys, foodCategory, loadingFood } = useSelector(state => state.MenuReducer)
-    const { foods, drinks } = categorys;
+    const { food, drinks } = categorys;
 
     const history = useHistory()
     const match = useRouteMatch()
     const { category: categoryActive } = useParams();
     const { classify: classifyRedux } = useSelector(state => state.ShopcontenReducer)
 
-    const clickItem = () => {
-        history.push(`${match.url}/dasdsada`)
+    const clickFood = (key) => {
+        history.push(`${match.url}/${key}`)
     }
 
     const clickCategory = (item, classify) => {
@@ -94,11 +94,11 @@ function ShopConten(props) {
             setClassify(classifyRedux)
             return
         }
-        else if (foods) {
-            history.push(`/menu/${foods[0]}`)
+        else if (food) {
+            history.push(`/menu/${food[0]}`)
         }
         setClassify('food')
-    }, [classifyRedux, foods, history])
+    }, [classifyRedux, food, history])
 
     //get conten food for catefgory
     const dispatch = useDispatch();
@@ -118,7 +118,7 @@ function ShopConten(props) {
         const classifyAction = setClassifyRedux(classify)
         dispatch(classifyAction)
         if (classify === 'food') {
-            clickCategory(foods[0], classify)
+            clickCategory(food[0], classify)
             return
         }
         clickCategory(drinks[0], classify)
@@ -147,7 +147,7 @@ function ShopConten(props) {
                             </div>
                             <div className={mobile ? classes.listItemMobile : classes.listItem}>
                                 {
-                                    foods && foods.map((item, index) => {
+                                    food && food.map((item, index) => {
                                         const classify = 'food'
                                         return (
                                             <CategoryButton key={index}
@@ -223,8 +223,8 @@ function ShopConten(props) {
                                             Danh mục
                                         </MenuItem>
                                         {
-                                            classifyActive === 'food' && foods &&
-                                            foods.map((item, index) => <MenuItem value={item} key={index}>{item}</MenuItem>)
+                                            classifyActive === 'food' && food &&
+                                            food.map((item, index) => <MenuItem value={item} key={index}>{item}</MenuItem>)
                                         }
                                         {
                                             classifyActive === 'drinks' && drinks &&
@@ -275,14 +275,16 @@ function ShopConten(props) {
                             {
                                 foodCategory && Object.keys(foodCategory).map((item, index) => {
                                     const {
-                                        link_img, describe, name, price
+                                        link_img, describe, name, price, key
                                     } = foodCategory[item]
                                     const minPrice = Math.min(...price.size)
 
                                     return (
                                         <Grid item lg={3} xs={6} key={index}>
                                             <CardFood
-                                                onClick={clickItem}
+                                                onClick={() => {
+                                                    clickFood(key)
+                                                }}
                                                 linkImg={link_img}
                                                 name={name}
                                                 foodDetail={describe}

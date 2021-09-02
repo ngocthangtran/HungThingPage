@@ -3,7 +3,7 @@ import { database } from "firebase/config";
 const MenuApi = {
     getCategory: async () => {
         const data = {
-            foods: await database.ref('food').once('value').then(data => {
+            food: await database.ref('food').once('value').then(data => {
                 const key = []
                 data.forEach((childSnapshot) => {
                     key.push(childSnapshot.key)
@@ -25,6 +25,10 @@ const MenuApi = {
         return await database.ref(`${classify}/${category}`).get().then(snapsort => {
             return snapsort.val();
         })
+    },
+    getFood: async (data) => {
+        const { classify, category, keyFood } = data;
+        return await database.ref(`${classify}/${category}/${keyFood}`).get().then(data => data.val())
     }
 }
 

@@ -8,6 +8,9 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { shortenMoney } from 'utils/convertPrice';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+
 const useStyle = makeStyles({
     container: {
         marginTop: "3rem"
@@ -64,7 +67,6 @@ const useStyle = makeStyles({
         },
     },
     active: {
-        background: '#0984e3',
         '&>span': {
             color: '#ffffff'
         }
@@ -111,6 +113,12 @@ const useStyle = makeStyles({
     suggest: {
         flex: 1,
         marginTop: '1rem'
+    },
+    priceUnit: {
+        fontSize: '1rem'
+    },
+    button: {
+        flex: '1',
     }
 })
 
@@ -130,6 +138,9 @@ const StyleButton = withStyles(theme => ({
 const StyleChip = withStyles({
     root: {
         margin: 5,
+        '&:hover': {
+            // backgroundColor: '#b2bec3'
+        }
     },
     label: {
         fontSize: '1.5rem',
@@ -139,13 +150,38 @@ const StyleChip = withStyles({
 
 function IndexViewFood() {
 
-    //display
+    //*display
     const classes = useStyle();
     const theme = useTheme();
     const mobile = useMediaQuery(theme.breakpoints.down('xs'));
-    const ipad = useMediaQuery(theme.breakpoints.down('sm'))
+    const ipad = useMediaQuery(theme.breakpoints.down('sm'));
 
-    //handling data
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    }
+    const handleClose = (item) => {
+        setAnchorEl(null);
+        if (item.unit && item.unit !== dataOder.amount.oderOption.unit) {
+            setDataOder({
+                ...dataOder,
+                amount: {
+                    ...dataOder.amount,
+                    oderOption: item
+                }
+            })
+        }
+    };
+    const clickPrice = (item) => {
+        if (item !== dataOder.selectPrice) {
+            setDataOder({
+                ...dataOder,
+                selectPrice: item
+            })
+        }
+    }
+
+    //*handling data
     const { category: categoryReducer } = useSelector(state => state.MenuReducer)
     const [viewFood, setViewFood] = useState();
     const [classify, setClassify] = useState('');
@@ -179,8 +215,43 @@ function IndexViewFood() {
     useEffect(() => {
         if (viewFood) {
             setLoading(false)
+
             return
         } setLoading(true)
+    }, [viewFood])
+
+    useEffect(() => {
+        const top = document.getElementById('abc')
+        if (top) {
+            window.scrollTo(0, top.offsetTop - theme.mixins.toolbar.minHeight);
+        }
+    }, [])
+
+    //*handling action
+    const [dataOder, setDataOder] = useState({
+        amount: {
+            amount: 1,
+            oderOption: {}
+        },
+        key: '',
+        name: '',
+        selectPrice: 0,
+        unit: ''
+    });
+    useEffect(() => {
+        if (viewFood) {
+            setDataOder({
+                ...dataOder,
+                key: viewFood.key,
+                name: viewFood.name,
+                selectPrice: Math.min(...viewFood.price.size),
+                unit: viewFood.price.unit,
+                amount: {
+                    ...dataOder.amount,
+                    oderOption: viewFood.oderOption ? viewFood.oderOption[0] : {}
+                }
+            })
+        }
     }, [viewFood])
     return (
         <>
@@ -194,21 +265,37 @@ function IndexViewFood() {
             {
                 !loading &&
                 <Container maxWidth='lg' className={classes.container}>
-                    <Grid container>
+                    <Grid container >
                         <Grid item sm={6} xs={12}>
                             <Container disableGutters={true}>
-                                <div className={classes.img__food}style={{backgroundImage:`url(${viewFood.link_img})`}}>
+                                <div id='abc' className={classes.img__food} style={{ backgroundImage: `url(${viewFood.link_img})` }}>
                                 </div>
                             </Container>
                         </Grid>
                         <Grid item sm={6} xs={12} style={{ display: 'flex', flexDirection: 'column' }}>
                             <Container maxWidth={false} disableGutters={mobile}>
                                 <div className={classes.info}>
-                                    <div >{viewFood.name}</div>
+                                    <div >
+                                        {viewFood.name}
+                                        <p className={classes.priceUnit}>
+                                            Từ: {shortenMoney(Math.min(...viewFood.price.size))}/{viewFood.price.unit}
+                                        </p>
+                                    </div>
                                     <div className={classes.price}>
                                         <p>Giá:</p>
                                         {
-                                            viewFood.price.size.map((item, index) => <StyleChip label={shortenMoney(item)} key={index} />)
+                                            viewFood.price.size.map((item, index) =>
+
+                                                <StyleChip
+                                                    label={shortenMoney(item)}
+                                                    key={index}
+                                                    className={item === dataOder.selectPrice ? classes.active : ''}
+                                                    color={item === dataOder.selectPrice ? 'primary' : 'default'}
+                                                    onClick={() => {
+                                                        clickPrice(item)
+                                                    }}
+                                                />
+                                            )
                                         }
                                     </div>
                                     <div className={classes.p}><p>Danh mục:</p> {viewFood.category}</div>
@@ -221,7 +308,7 @@ function IndexViewFood() {
                                 </div>
                                 <Divider />
                                 <Grid container style={{ marginTop: '1rem' }}>
-                                    <Grid item md={6} xs={12} style={{ display: 'flex' }}>
+                                    <Grid item md={12} xs={12} style={{ display: 'flex' }}>
                                         <div className={classes.count}>
                                             <span>Số lượng:</span>
                                             <div className={classes.btn}>-</div>
@@ -229,15 +316,52 @@ function IndexViewFood() {
                                                 suppressContentEditableWarning={true}
                                                 className={`${classes.btn} ${classes.input}`}
                                             >
-                                                0
+                                                {dataOder.amount.amount}
                                             </div>
                                             <div className={classes.btn}>+</div>
                                         </div>
+                                        {
+                                            viewFood.oderOption &&
+                                            <>
+                                                <Button
+                                                    aria-controls="simple-menu"
+                                                    aria-haspopup="true"
+                                                    className={classes.button}
+                                                    onClick={handleClick}
+                                                >
+                                                    {dataOder.amount.oderOption.unit}
+                                                </Button>
+                                                <Menu
+                                                    id="simple-menu"
+                                                    open={Boolean(anchorEl)}
+                                                    anchorEl={anchorEl}
+                                                    keepMounted
+                                                    onClose={handleClose}
+                                                >
+                                                    {
+                                                        viewFood.oderOption.map((item, index) => {
+                                                            return (
+                                                                <MenuItem
+                                                                    onClick={() => {
+                                                                        handleClose(item);
+                                                                    }}
+                                                                    key={index}
+                                                                >
+                                                                    {item.unit}
+                                                                </MenuItem>
+                                                            )
+                                                        })
+                                                    }
+                                                </Menu>
+                                            </>
+                                        }
                                     </Grid>
-                                    <Grid item md={6} xs={12}>
+
+                                    <Grid item md={12} xs={12}>
                                         <StyleButton
                                             style={
-                                                ipad ? { margin: '1rem 0' } : {}
+                                                // ipad ? { margin: '1rem 0' } : {}
+                                                { margin: '1rem 0' }
                                             }
                                         >Thêm vào giỏ hàng</StyleButton>
                                     </Grid>

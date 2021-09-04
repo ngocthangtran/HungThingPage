@@ -88,11 +88,13 @@ const useStyle = makeStyles({
     btn: {
         width: '2rem',
         height: "2rem",
-        border: '1px solid black',
+        border: '1px solid #999',
         color: '#999',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        cursor: 'pointer',
+        userSelect: 'none'
     },
     input: {
         overflow: 'hidden',
@@ -130,8 +132,8 @@ const StyleButton = withStyles(theme => ({
         color: '#ffffff',
         width: '100%',
         '&:hover': {
-            backgroundColor: '#a83532'
-        }
+            backgroundColor: '#ff514e'
+        },
     },
 }))(Button)
 
@@ -154,7 +156,9 @@ function IndexViewFood() {
     const classes = useStyle();
     const theme = useTheme();
     const mobile = useMediaQuery(theme.breakpoints.down('xs'));
-    const ipad = useMediaQuery(theme.breakpoints.down('sm'));
+    // const ipad = useMediaQuery(theme.breakpoints.down('sm'));
+
+
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const handleClick = (event) => {
@@ -197,7 +201,6 @@ function IndexViewFood() {
             })
             const getFood = async (params) => {
                 const data = await MenuApi.getFood(params);
-                console.log(data)
                 setViewFood(data)
             }
             if (classify) {
@@ -215,19 +218,14 @@ function IndexViewFood() {
     useEffect(() => {
         if (viewFood) {
             setLoading(false)
-
             return
         } setLoading(true)
     }, [viewFood])
 
-    useEffect(() => {
-        const top = document.getElementById('abc')
-        if (top) {
-            window.scrollTo(0, top.offsetTop - theme.mixins.toolbar.minHeight);
-        }
-    }, [])
+
 
     //*handling action
+    //-load default dataOder
     const [dataOder, setDataOder] = useState({
         amount: {
             amount: 1,
@@ -241,18 +239,54 @@ function IndexViewFood() {
     useEffect(() => {
         if (viewFood) {
             setDataOder({
-                ...dataOder,
                 key: viewFood.key,
                 name: viewFood.name,
                 selectPrice: Math.min(...viewFood.price.size),
                 unit: viewFood.price.unit,
                 amount: {
-                    ...dataOder.amount,
+                    amount: 1,
                     oderOption: viewFood.oderOption ? viewFood.oderOption[0] : {}
                 }
             })
         }
     }, [viewFood])
+
+    //-handle button counter quantity
+    const minus = () => {
+        if (dataOder.amount.amount === 1) {
+            return
+        }
+        setDataOder({
+            ...dataOder,
+            amount: {
+                ...dataOder.amount,
+                amount: dataOder.amount.amount - 1
+            }
+        })
+    }
+    const plus = () => {
+        if (dataOder.amount.amount === 10) {
+            return
+        }
+        setDataOder({
+            ...dataOder,
+            amount: {
+                ...dataOder.amount,
+                amount: dataOder.amount.amount + 1
+            }
+        })
+    }
+    const onchangeValue = (ev) => {
+        const value = ev.target.value;
+        setDataOder({
+            ...dataOder,
+            amount: {
+                ...dataOder.amount,
+                amount: value
+            }
+        })
+    }
+
     return (
         <>
             {
@@ -268,7 +302,8 @@ function IndexViewFood() {
                     <Grid container >
                         <Grid item sm={6} xs={12}>
                             <Container disableGutters={true}>
-                                <div id='abc' className={classes.img__food} style={{ backgroundImage: `url(${viewFood.link_img})` }}>
+                                <div id='abc'
+                                    className={classes.img__food} style={{ backgroundImage: `url(${viewFood.link_img})` }}>
                                 </div>
                             </Container>
                         </Grid>
@@ -311,14 +346,15 @@ function IndexViewFood() {
                                     <Grid item md={12} xs={12} style={{ display: 'flex' }}>
                                         <div className={classes.count}>
                                             <span>Số lượng:</span>
-                                            <div className={classes.btn}>-</div>
+                                            <div className={classes.btn} onClick={minus}>-</div>
                                             <div contentEditable="true"
                                                 suppressContentEditableWarning={true}
                                                 className={`${classes.btn} ${classes.input}`}
+                                                onChange={onchangeValue}
                                             >
                                                 {dataOder.amount.amount}
                                             </div>
-                                            <div className={classes.btn}>+</div>
+                                            <div className={classes.btn} onClick={plus}>+</div>
                                         </div>
                                         {
                                             viewFood.oderOption &&
@@ -360,8 +396,9 @@ function IndexViewFood() {
                                     <Grid item md={12} xs={12}>
                                         <StyleButton
                                             style={
-                                                // ipad ? { margin: '1rem 0' } : {}
-                                                { margin: '1rem 0' }
+                                                {
+                                                    margin: '1rem 0',
+                                                }
                                             }
                                         >Thêm vào giỏ hàng</StyleButton>
                                     </Grid>

@@ -5,6 +5,7 @@ import HomeIcon from '@material-ui/icons/Home';
 import MenuIcon from '@material-ui/icons/Menu';
 import RestaurantMenuIcon from '@material-ui/icons/RestaurantMenu';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import IndexLogin from 'Page/Login/IndexLogin';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
@@ -17,7 +18,8 @@ const useStyle = makeStyles((theme) => {
         Appbar: {
             flexDirection: 'row',
             justifyContent: 'space-between',
-            padding: '0 4rem'
+            padding: '0 4rem',
+            backgroundColor: "#3498db"
         },
         logo: {
             height: '3rem'
@@ -42,6 +44,7 @@ const useStyle = makeStyles((theme) => {
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'space-between',
+            backgroundColor: "#3498db"
         },
         menu: {
             position: 'relative',
@@ -69,7 +72,8 @@ const StyledBadge = withStyles((theme) => ({
         padding: '0 4px',
         width: '2.5em',
         height: '1.5em',
-        backgroundColor: '#f39c12'
+        backgroundColor: '#f39c12',
+        color:"#3498db"
     },
 }))(Badge);
 
@@ -109,7 +113,7 @@ const MenuItem = withStyles((theme) => ({
 
     },
     label: {
-        justifyContent: 'end'
+        justifyContent: 'start'
     }
 }))(Button);
 
@@ -121,8 +125,17 @@ function NavBar(props) {
     const history = useHistory();
     const { pageActive } = useSelector(state => state.NavbarReducer)
 
+    const [login, setLogin] = useState(false);
+    const btLogin = () => {
+        setLogin(true)
+    }
+    const closeLogin = () => {
+        setLogin(false)
+    }
+
     return (
         <>
+            <IndexLogin open={login} close={closeLogin} />
             {
                 match ? (
                     <AppBar className={classes.AppbarMobile}>
@@ -138,7 +151,7 @@ function NavBar(props) {
                         </Toolbar>
                         <Toolbar style={{ padding: "0 1rem 0 0" }}>
                             <IconButton >
-                                <StyledBadge badgeContent={4} color='secondary'>
+                                <StyledBadge badgeContent={0} style={{color:'#ffffff'}}>
                                     <ShoppingCartIcon />
                                 </StyledBadge>
                             </IconButton>
@@ -150,7 +163,9 @@ function NavBar(props) {
                             }
                             }
                         >
-                            <StyledBtMobile>
+                            <StyledBtMobile
+                                onClick={btLogin}
+                            >
                                 <StyledAvt style={{
                                     marginLeft: 0
                                 }} />
@@ -222,7 +237,7 @@ function NavBar(props) {
                                     <ShoppingCartIcon />
                                 </StyledBadge>
                             </IconButton>
-                            <StyledBt>
+                            <StyledBt onClick={btLogin}>
                                 <StyledAvt />
                                 Sign In
                             </StyledBt>

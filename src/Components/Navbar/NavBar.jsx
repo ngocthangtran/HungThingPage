@@ -5,6 +5,7 @@ import HomeIcon from '@material-ui/icons/Home';
 import MenuIcon from '@material-ui/icons/Menu';
 import RestaurantMenuIcon from '@material-ui/icons/RestaurantMenu';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import Notification from 'Components/Notification/Notification';
 import IndexLogin from 'Page/Login/IndexLogin';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -72,8 +73,8 @@ const StyledBadge = withStyles((theme) => ({
         padding: '0 4px',
         width: '2.5em',
         height: '1.5em',
-        backgroundColor: '#f39c12',
-        color:"#3498db"
+        backgroundColor: '#c0392b',
+        color: "#ffffff"
     },
 }))(Badge);
 
@@ -83,15 +84,6 @@ const StyledAvt = withStyles((theme) => ({
         marginLeft: '3rem'
     },
 }))(Avatar);
-
-const StyledBt = withStyles((theme) => ({
-    root: {
-        borderRadius: 'unset',
-        fontSize: '1rem',
-        fontWeight: 600,
-        color: '#ffffff'
-    },
-}))(IconButton);
 
 const StyledBtMobile = withStyles((theme) => ({
     root: {
@@ -117,14 +109,30 @@ const MenuItem = withStyles((theme) => ({
     }
 }))(Button);
 
-function NavBar(props) {
-    const classes = useStyle();
-    const theme = useTheme();
-    const match = useMediaQuery(theme.breakpoints.down('xs'))
-    const [open, isOpen] = useState(false)
-    const history = useHistory();
-    const { pageActive } = useSelector(state => state.NavbarReducer)
+function BadgeComponent() {
+    const [open, setOpen] = useState(false)
+    const onClickBadge = () => {
+        setOpen(true)
+    }
+    const onCloseDialog = () => {
+        setOpen(false)
+    }
+    return (
+        <>
+            <Notification open={open} close={onCloseDialog} />
+            <IconButton onClick={onClickBadge}>
+                <StyledBadge badgeContent={0} style={{ color: '#ffffff' }}>
+                    <ShoppingCartIcon />
+                </StyledBadge>
+            </IconButton>
+        </>
+    )
+}
 
+function User() {
+    const { desk } = useSelector(state => state.DeskReducer)
+
+    //open dialong login
     const [login, setLogin] = useState(false);
     const btLogin = () => {
         setLogin(true)
@@ -136,9 +144,48 @@ function NavBar(props) {
     return (
         <>
             <IndexLogin open={login} close={closeLogin} />
+            <StyledBtMobile
+                onClick={btLogin}
+            >
+
+                {
+                    !desk &&
+                    <>
+                        <StyledAvt style={{
+                            marginLeft: 0
+                        }}></StyledAvt>
+                        Sign In
+                    </>
+                }
+                {
+                    desk &&
+                    <>
+                        <StyledAvt style={{
+                            marginLeft: 0
+                        }}>{desk.numberTable}</StyledAvt>
+                        Bàn {desk.numberTable}
+                    </>
+                }
+            </StyledBtMobile>
+        </>
+    )
+}
+
+function NavBar(props) {
+    const classes = useStyle();
+    const theme = useTheme();
+    const match = useMediaQuery(theme.breakpoints.down('xs'))
+    const [open, isOpen] = useState(false)
+    const history = useHistory();
+    const { pageActive } = useSelector(state => state.NavbarReducer)
+
+
+    return (
+        <>
+
             {
                 match ? (
-                    <AppBar className={classes.AppbarMobile}>
+                    <AppBar className={classes.AppbarMobile} id="appbar">
                         <Toolbar style={{ padding: 0 }}>
                             <IconButton onClick={() => {
                                 isOpen(true)
@@ -150,11 +197,7 @@ function NavBar(props) {
                             <img src={Logo} alt="" className={classes.logo} />
                         </Toolbar>
                         <Toolbar style={{ padding: "0 1rem 0 0" }}>
-                            <IconButton >
-                                <StyledBadge badgeContent={0} style={{color:'#ffffff'}}>
-                                    <ShoppingCartIcon />
-                                </StyledBadge>
-                            </IconButton>
+                            <BadgeComponent />
                         </Toolbar>
                         <DrawerStyle
                             open={open}
@@ -163,14 +206,7 @@ function NavBar(props) {
                             }
                             }
                         >
-                            <StyledBtMobile
-                                onClick={btLogin}
-                            >
-                                <StyledAvt style={{
-                                    marginLeft: 0
-                                }} />
-                                Sign In
-                            </StyledBtMobile>
+                            <User />
                             <Divider />
                             <ul className={classes.navbar__menu__mobile}>
                                 <MenuItem onClick={() => {
@@ -212,7 +248,7 @@ function NavBar(props) {
                         </DrawerStyle>
                     </AppBar>
                 ) : (
-                    <AppBar position='fixed' className={classes.Appbar}>
+                    <AppBar position='fixed' className={classes.Appbar} id="appbar">
                         <Toolbar className={classes.NavBar}>
 
                             <img src={Logo} alt="" className={classes.logo} />
@@ -232,15 +268,8 @@ function NavBar(props) {
                             </ul>
                         </Toolbar>
                         <Toolbar>
-                            <IconButton aria-label="cart">
-                                <StyledBadge badgeContent={4} color='secondary'>
-                                    <ShoppingCartIcon />
-                                </StyledBadge>
-                            </IconButton>
-                            <StyledBt onClick={btLogin}>
-                                <StyledAvt />
-                                Sign In
-                            </StyledBt>
+                            <BadgeComponent />
+                            <User />
                         </Toolbar>
                     </AppBar>
                 )

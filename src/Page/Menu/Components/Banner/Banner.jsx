@@ -1,5 +1,5 @@
 import { makeStyles } from '@material-ui/core';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 const useStyle = makeStyles({
     banner: {
@@ -19,18 +19,10 @@ const useStyle = makeStyles({
 
 function Banner(props) {
     const classes = useStyle()
-    
-    useEffect(() => {
-        const newTop = document.getElementById('abc')
-        if (newTop) {
-            const bottom = newTop.offsetHeight+newTop.offsetTop
-            console.log(bottom)
-            window.scrollTo(0, bottom );
-        }
-    })
+
     return (
 
-        <div id='abc' className={classes.banner}>
+        <div className={classes.banner}>
             Menu phong phú, đa dạng phù hợp với nhiều khẩu vị
         </div>
     );

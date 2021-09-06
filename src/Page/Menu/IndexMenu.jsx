@@ -23,11 +23,11 @@ function IndexMenu(props) {
         } catch (error) {
             console.log('Error in Shop conten')
         }
-        
+
     }, [dispatch])
     const { category, loadingCategory } = useSelector(state => state.MenuReducer);
     const { food } = category
-    
+
     return (
         <>
             <Banner />

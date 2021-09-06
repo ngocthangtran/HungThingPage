@@ -1,6 +1,8 @@
 import { Dialog, DialogContent, DialogTitle } from '@material-ui/core';
 import React from 'react';
-import Login from './Login/Login';
+import { useSelector } from 'react-redux';
+import InfoUser from './Components/Infouser/InfoUser';
+import Login from './Components/LoginForm/Login';
 
 function IndexLogin(props) {
     const { open, close } = props
@@ -8,6 +10,8 @@ function IndexLogin(props) {
         close()
     };
 
+    //check user - if user exits then show info user else show login form
+    const { desk } = useSelector(state => state.DeskReducer);
 
     return (
         <Dialog
@@ -17,15 +21,34 @@ function IndexLogin(props) {
             onClose={handleClose}
             aria-labelledby="simple-dialog-title"
         >
-            <DialogTitle
-                id="simple-dialog-title"
-                style={{ textAlign: 'center' }}
-            >
-                Đăng nhập
-            </DialogTitle>
-            <DialogContent>
-                <Login />
-            </DialogContent>
+            {
+                !desk &&
+                <>
+                    <DialogTitle
+                        id="simple-dialog-title"
+                        style={{ textAlign: 'center' }}
+                    >
+                        Đăng nhập
+                    </DialogTitle>
+                    <DialogContent>
+                        <Login />
+                    </DialogContent>
+                </>
+            }
+            {
+                desk &&
+                <>
+                    <DialogTitle
+                        id="simple-dialog-title"
+                        style={{ textAlign: 'center' }}
+                    >
+                        Thông tin chi tiết
+                    </DialogTitle>
+                    <DialogContent>
+                        <InfoUser />
+                    </DialogContent>
+                </>
+            }
         </Dialog>
     );
 }

@@ -6,7 +6,7 @@ const userSlide = createSlice({
         login: false,
         username: '',
         id: '',
-        roles: null
+        roles: true
     }
 })
 

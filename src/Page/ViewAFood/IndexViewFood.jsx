@@ -1,7 +1,7 @@
 import { Button, Chip, CircularProgress, Divider, useMediaQuery } from '@material-ui/core';
 import { Container, Grid, makeStyles, useTheme, withStyles } from '@material-ui/core';
 import MenuApi from 'Api/MenuApi';
-import CardFood from 'Page/Home/components/CardFood/CardFood';
+import CardFood from 'Components/CardFood/CardFood';
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
@@ -348,7 +348,6 @@ function FormData(props) {
 function IndexViewFood() {
     //*display
     const classes = useStyle();
-    const theme = useTheme();
     // const ipad = useMediaQuery(theme.breakpoints.down('sm'));
 
     //auto srollTo

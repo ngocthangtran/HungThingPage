@@ -11,9 +11,12 @@ import { ActionCategory } from './slideMenu';
 function IndexMenu(props) {
     const Match = useRouteMatch();
     const dispatch = useDispatch();
+
+    //ghi nho navbar
     useEffect(() => {
         const ActionNavBar = setPageActive('menu')
         dispatch(ActionNavBar);
+        document.title="Menu"
     })
 
     useEffect(() => {
@@ -41,8 +44,6 @@ function IndexMenu(props) {
                 <Route exact path={`${Match.url}/:category`} component={ShopConten} />
                 <Route exact path={`${Match.url}/:category/:keyFood`} component={IndexViewFood} />
             </Switch>
-
-            {/* <ShopConten /> */}
         </>
     );
 }

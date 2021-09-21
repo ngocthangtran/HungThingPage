@@ -2,7 +2,7 @@ import { Hidden, useMediaQuery } from '@material-ui/core';
 import { Button, Container, Divider, FormControl, Grid, makeStyles, MenuItem, Select, TextField, useTheme, withStyles } from '@material-ui/core';
 import FastfoodIcon from '@material-ui/icons/Fastfood';
 import LocalBarIcon from '@material-ui/icons/LocalBar';
-import CardFood from 'Page/Home/components/CardFood/CardFood';
+import CardFood from 'Components/CardFood/CardFood';
 import { ActionGetFoodByCategoty } from 'Page/Menu/slideMenu';
 import React from 'react';
 import { useState } from 'react';

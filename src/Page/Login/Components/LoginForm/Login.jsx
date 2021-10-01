@@ -1,8 +1,14 @@
 import { Button, Checkbox, makeStyles, } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
-import TextFieldCustom from 'CustomField/TextField/TextFieldCustom';
+import loginApi from 'Api/loginApi';
+import { addUserAction } from 'App/UserSlide';
+import TextFieldCustom from 'CustomField/TextFieldCustom';
 import { Formik, Form, FastField } from 'formik';
-import React from 'react';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { addNotification } from 'App/notificationSlide';
 
 const useStyel = makeStyles({
     checkbox: {
@@ -24,6 +30,12 @@ const useStyel = makeStyles({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center'
+    },
+    textField: {
+        marginBlock: '2rem',
+    },
+    err: {
+        color: "red"
     }
 })
 
@@ -36,8 +48,35 @@ const StyleButton = withStyles({
     }
 })(Button)
 
+const Loading = withStyles({
+    root: {
+        height: 20,
+        width: 20
+    }
+})(CircularProgress)
+
 function Login(props) {
     const classes = useStyel();
+    const [err, setErr] = useState('');
+
+    const dispatch = useDispatch();
+    const history = useHistory();
+
+    const onSubmidLogin = async (values) => {
+        const data = await loginApi.login(values);
+
+        if (data.status) {
+            setErr(data)
+            return
+        }
+        setErr("")
+        localStorage.setItem('token', data.token);
+        const actionAddUser = addUserAction(data.user);
+        await dispatch(actionAddUser);
+        const notification = addNotification({ message: "Đăng nhập thành công", type: "success" })
+        dispatch(notification);
+        history.push('/')
+    }
     const initialValues = {
         'username': '',
         'password': '',
@@ -45,31 +84,58 @@ function Login(props) {
     return (
         <Formik
             initialValues={initialValues}
+            onSubmit={onSubmidLogin}
         >
             {formikProp => {
-                console.log(formikProp.values)
+                const { isSubmitting } = formikProp;
                 return (
                     <Form>
-                        <FastField
-                            name='username'
-                            component={TextFieldCustom}
+                        <div className={classes.textField}>
+                            <FastField
+                                name='username'
+                                component={TextFieldCustom}
 
-                            label="Tên đăng nhập"
-                        />
-                        <FastField
-                            name='password'
-                            component={TextFieldCustom}
+                                label="Tên đăng nhập"
+                            />
+                        </div>
+                        <div className={classes.textField} style={{ marginBottom: "1rem" }}>
+                            <FastField
+                                name='password'
+                                component={TextFieldCustom}
 
-                            label="Mật khẩu"
-                            type="password"
-                        />
+                                label="Mật khẩu"
+                                type="password"
+                            />
+                        </div>
+                        {
+                            isSubmitting &&
+                            <div style={{ height: 20 }}>
+                                <Loading
+
+                                    style={
+                                        {
+                                            width: 20,
+                                            height: 20,
+                                            float: 'right'
+                                        }
+                                    }
+                                />
+                            </div>
+                        }
+                        {
+                            err && <div className={classes.err}>{err.message}</div>
+                        }
                         <div className={classes.checkbox}>
                             <Checkbox
                                 checked={false}
                             />Nhớ mật khẩu
                         </div>
                         <div>
-                            <StyleButton fullWidth>Đăng nhập</StyleButton>
+                            <StyleButton
+                                fullWidth
+                                type="submit"
+                            >
+                                Đăng nhập</StyleButton>
                         </div>
                         <div className={classes.loginWith}>
                             Đăng nhập bằng

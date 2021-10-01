@@ -16,7 +16,8 @@ const useStyle = makeStyles({
         width: 'calc(100% / 5 - 1.5rem)',
         marginLeft: '1.5rem',
         boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
-        borderRadius: '0.3rem'
+        borderRadius: '0.3rem',
+        backgroundColor:'#ffffff'
     },
     img: {
         width: '100%',
@@ -43,7 +44,6 @@ function Desk(props) {
     const classes = useStyle();
     return (
         <div className={classes.parent}>
-
             <div className={classes.card}>
                 <img src={process.env.PUBLIC_URL + '/img/dinner-table.png'} alt="" className={classes.img} />
                 <div className={classes.conten}>

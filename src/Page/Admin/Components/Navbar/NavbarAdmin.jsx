@@ -1,12 +1,16 @@
-import { Avatar, Badge, Container, makeStyles } from '@material-ui/core';
+import { Avatar, Badge, Container, makeStyles, Menu, MenuItem } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import HomeIcon from '@material-ui/icons/Home';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
+import { removeUser } from 'App/UserSlide'
 
 import Notification from '@material-ui/icons/NotificationsNone';
+import { Link, useRouteMatch, useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 const heightNav = "5rem",
     widthNav = "250px"
@@ -71,11 +75,13 @@ const useStyle = makeStyles({
     menuItem: {
         padding: "10px 10px 10px 25px",
         color: "#fff",
-        display: 'flex',
-        alignItems: 'end',
-        textTransform: "capitalize",
-        "&>svg": {
-            marginRight: "5px"
+        "&>a": {
+            display: 'flex',
+            alignItems: 'end',
+            textTransform: "capitalize",
+            "&>svg": {
+                marginRight: "5px"
+            }
         }
     },
     dropdownMenu: {
@@ -102,8 +108,8 @@ const useStyle = makeStyles({
         marginTop: '5px',
         transition: '0.2s'
     },
-    activeDropdown: {
-        // height: "146px"
+    activeItem: {
+        color: '#0984e3'
     },
     dropdownItem: {
         paddingLeft: 0,
@@ -121,7 +127,7 @@ const useStyle = makeStyles({
 
 function NavbarDropdow(props) {
     const classes = useStyle();
-    const { name, item, active, onClick } = props;
+    const { name, item, active, onClickMenu, itemActive, setItemActive } = props;
 
     const [height, setHeight] = useState(0)
     useEffect(() => {
@@ -132,10 +138,12 @@ function NavbarDropdow(props) {
         }
     }, [active, item])
 
+
+
     return (
         <li
             className={`${classes.menuItem} ${classes.dropdownMenu} ${active ? classes.active : ''}`}
-            onClick={() => { onClick(name) }}
+            onClick={() => { onClickMenu(name) }}
         >
             <div >
                 <div>
@@ -154,10 +162,16 @@ function NavbarDropdow(props) {
                     item.map((el, index) => {
                         const { name, href } = el;
                         return (
-                            <li className={`${classes.menuItem} ${classes.dropdownItem}`} key={index}>
-                                <a href={href} >
+                            <li
+                                className={`${classes.menuItem} ${classes.dropdownItem}`}
+                                key={index}
+                            >
+                                <Link to={href}
+                                    onClick={() => setItemActive(name)}
+                                    className={itemActive === name ? classes.activeItem : ''}
+                                >
                                     <KeyboardArrowRightIcon />{name}
-                                </a>
+                                </Link>
                             </li>
                         )
                     })
@@ -167,17 +181,64 @@ function NavbarDropdow(props) {
     )
 }
 
+function MenuUserItem(props) {
+    const { anchorEl, handleClose } = props
+    const dispatch = useDispatch();
+    const history = useHistory();
+    const logout = () => {
+        handleClose();
+        localStorage.removeItem('token')
+        const actionRemove = removeUser();
+        dispatch(actionRemove);
+        history.push('/')
+    }
+    return (
+        <Menu
+            id="simple-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+        >
+            <MenuItem onClick={handleClose}>Profile</MenuItem>
+            <MenuItem onClick={logout}>
+                Logout
+            </MenuItem>
+        </Menu>
+    )
+}
+
 function NavbarAdmin(props) {
     const classes = useStyle();
 
-    const [activeName, setNameActive] = useState('');
+    const [activeName, setNameActive] = useState('home');
+    const [activeColor, setActiveColor] = useState('home')
 
-    const onClick = (name) => {
+    const onClickMenu = (name) => {
         setNameActive(name)
     }
 
+    const setItemActive = (name) => {
+        setActiveColor(name)
+    }
+
+    const Match = useRouteMatch();
+
+    const { username } = useSelector(state => state.UserReducer)
+
+    //handling menuItem user
+    const [anchorEl, setAnchorEl] = useState(null);
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
     return (
         <>
+            <MenuUserItem anchorEl={anchorEl} handleClose={handleClose} />
             <header>
                 <div className={classes.navbar}>
                     <div className={classes.logo} >
@@ -206,9 +267,11 @@ function NavbarAdmin(props) {
                                     fontFamily: 'Quicksand',
                                     margin: '1rem'
                                 }}>
-                                    trần thăng
+                                    {username}
                                 </div>
-                                <KeyboardArrowDownIcon />
+                                <div onClick={handleClick}>
+                                    <KeyboardArrowDownIcon />
+                                </div>
                             </div>
                         </Container>
                     </div>
@@ -219,22 +282,31 @@ function NavbarAdmin(props) {
                     </div>
                     <ul className={classes.menu}>
                         <li className={classes.menuItem}
-                            onClick={() => {
-                                onClick('')
-                            }}
+
                         >
-                            <HomeIcon />
-                            Trang chủ
+                            <Link
+                                onClick={() => {
+                                    onClickMenu('');
+                                    setActiveColor('home')
+                                }}
+                                to={`${Match.url}`}
+                                className={activeColor === 'home' ? classes.activeItem : ''}
+                            >
+                                <HomeIcon />
+                                Trang chủ
+                            </Link>
                         </li>
                         <NavbarDropdow
                             name="Menu"
                             item={[
-                                { name: "Thêm menu", href: "/" },
-                                { name: "Danh sách menu", href: "/" },
-                                { name: "Chương trình khuyến mại", href: "/" },
+                                { name: "Thêm menu", href: `${Match.url}/add-menu` },
+                                { name: "Danh sách menu", href: `${Match.url}/menu` },
+                                { name: "Chương trình khuyến mại", href: `${Match.url}` },
                             ]}
-                            onClick={onClick}
+                            onClickMenu={onClickMenu}
                             active={activeName === "Menu"}
+                            setItemActive={setItemActive}
+                            itemActive={activeColor}
                         />
                         <NavbarDropdow
                             name="Test"
@@ -242,8 +314,10 @@ function NavbarAdmin(props) {
                                 { name: "Thêm menu", href: "/" },
                                 { name: "Danh sách menu", href: "/" },
                             ]}
-                            onClick={onClick}
+                            onClickMenu={onClickMenu}
                             active={activeName === "Test"}
+                            setItemActive={setItemActive}
+                            itemActive={activeColor}
                         />
                     </ul>
                     <div className={classes.Category}>

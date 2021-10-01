@@ -22,21 +22,26 @@ TextFieldCustom.defaultProps = {
 
 const Text = withStyles((theme) => ({
     root: {
-        margin:'1rem 0'
+
     },
 
 }))(TextField);
 
 function TextFieldCustom(props) {
     const {
-        field,
+        field, form,
         label, type
     } = props
+    const { errors, touched } = form;
+
+    const showErr = errors[field.name] && touched[field.name];
     return (
         <Text label={label} type={type} variant="outlined" fullWidth
             {
             ...field
             }
+            error={showErr?true:false}
+            helperText={showErr && errors[field.name]}
         />
     );
 }

@@ -263,7 +263,7 @@ function NavBar(props) {
                                 </li>
                                 <li className={classes.navbar__item}>
                                     <EmojiFoodBeverageIcon />
-                                    <Link to='/oder'>Oder</Link>
+                                    <Link to='/admin'>Oder</Link>
                                 </li>
                             </ul>
                         </Toolbar>

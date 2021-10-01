@@ -13,7 +13,7 @@ function Slide(props) {
     const [select, setSlect] = useState(false)
     useEffect(() => {
         const max = 3
-        if(select){
+        if (select) {
             return
         }
         setTimeout(() => {

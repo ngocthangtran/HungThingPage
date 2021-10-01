@@ -2,6 +2,7 @@ import { FormControl, InputLabel, makeStyles, MenuItem, Select, TextField } from
 import React, { useState } from 'react';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CardFoodAdmin from '../CardFoodAdmin/CardFoodAdmin';
+import { useSelector } from 'react-redux';
 
 const useStyle = makeStyles({
     find: {
@@ -41,8 +42,10 @@ function ListMenu(props) {
     const [category, setCategory] = useState('');
     const handleChange = (event) => {
         console.log(event.target.value);
-        setCategory('');
+        setCategory(event.target.value);
     };
+    const { listCategory } = useSelector(state => state.MenuServerReducer)
+    
     return (
         <>
             <section className={classes.find}>
@@ -54,9 +57,15 @@ function ListMenu(props) {
                         value={category}
                         onChange={handleChange}
                     >
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
+                        {
+                            listCategory &&
+                            listCategory.map((item, index) => {
+                                return (
+                                    <MenuItem value={item.id} key={index}>{item.name}</MenuItem>
+                                )
+                            })
+                        }
+
                     </Select>
                 </FormControl>
                 <Autocomplete
